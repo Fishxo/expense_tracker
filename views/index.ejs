@@ -4,25 +4,281 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
+    margin-top: 30px;
+  }
+
+  form {
+    background-color: #fff;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  input[type="text"], input[type="date"], textarea, select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+
+  #addCatBtn {
+    background-color: #28a745;
+    margin-top: 5px;
+  }
+
+  #addCatBtn:hover {
+    background-color: #1e7e34;
+  }
+
+  #customCat {
+    margin-top: 5px;
+    display: none;
+  }
+
+  .expense-list {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0;
+  }
+
+  .expense-item {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    align-items: center;
+  }
+
+  .expense-details {
+    flex: 1;
+  }
+
+  .expense-details span {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: bold;
+  }
+
+  .expense-actions form {
+    display: inline-block;
+    margin-left: 5px;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .icon-btn:hover {
+    color: #007bff;
+  }
+  .form-buttons {
+  display: flex;
+  gap: 70px; /* space between Add and Calculator */
+}
+
+/* this css is for looping */
+/* Container for all expenses */
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Each expense card */
+.expense-item {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Expense details (text) */
+.expense-details span {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+/* Actions (buttons) */
+.expense-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.expense-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+/* Delete button */
+.expense-actions form button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.expense-actions form button:hover {
+  background-color: #a71d2a;
+}
+
+/* Edit button (icon) */
+.expense-actions .icon-btn {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.expense-actions .icon-btn:hover {
+  background-color: #e0a800;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 600px) {
+  .expense-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .expense-actions {
+    margin-top: 10px;
+  }
+}
+
+</style>
+
+
 </head>
 <body>
     <h1>know your expense!</h1>
     <form action="/add" method="post">
         <label for="descreaptiom" >descreaption</label>
         <textarea name="desc" id="new" required></textarea><br>
-        <label for="category">category</label>
-        <input type="text" name="cat" required ><br>
+        <label for="cat">Category:</label>
+<select id="cat" name="cat" onchange="checkOther(this)">
+  <option value="Food">Food</option>
+  <option value="Transport">Transport</option>
+  <option value="Bills">Bills</option>
+  <option value="Entertainment">Entertainment</option>
+  <option value="Other">Other</option>
+
+</select>
+ <button type="button" id="addCatBtn">➕</button>
+<input type="text" id="customCat" name="cat" placeholder="Enter custom category" style="display:none; margin-top:5px;">
+        
         <label for="amount">amount</label>
         <input type="text" name="amount" id="am" required><br>
+        <label for="birrs">birr</label>
+        <input class="birr" type="text" name="birr" required>
         <label for="date">date</label>
-        <input type="date" name="date" required><br>
-        <button type="submit">add</button>
+        <input class="date" type="date" name="date" required><br>
+
+        <div class="form-buttons">
+    <button type="submit">Add</button>
+    <button type="button" id="calcBtn" onclick="calculateSum()">Calculator</button>
+    
+  </div>
+  <p id="result">Result: 0</p>
     </form>
-    <% expensess.forEach(expense => {%>
-      <%= expense.desc%>
-      <%= expense.cat%>
-      <%= expense.amount%>
-      <%= expense.date%>
-   <% })%>
+    
+   <% expensess.forEach(expense => { %>
+<div class="expense-item">
+  <div class="expense-details">
+    <span><strong>Description:</strong> <%= expense.desc %></span>
+    <span><strong>Category:</strong> <%= expense.cat %></span>
+    <span><strong>Amount:</strong> <%= expense.amount %></span>
+    <span><strong>Birr:</strong> <%= expense.birr %></span>
+    <span><strong>Date:</strong> <%= expense.date %></span>
+  </div>
+
+  <div class="expense-actions">
+    <form action="/delete/<%= expense.id %>" method="post">
+      <button>Delete</button>
+    </form>
+    <form action="/edit/<%= expense.id %>" method="get">
+      <button class="icon-btn">✏️</button>
+    </form>
+  </div>
+</div>
+<% }) %>
+
+   <script>
+ // for calculater 
+   function calculateSum() {
+  const inputs = document.querySelectorAll('.num');
+  let sum = 0;
+
+  inputs.forEach(input => {
+    sum += Number(input.value); // add each input
+  });
+
+  // Show the result
+  document.getElementById('result').textContent = `Result: ${sum}`;
+}
+  const addBtn = document.getElementById('addCatBtn');
+  const select = document.getElementById('catSelect');
+  const customInput = document.getElementById('customCat');
+
+  addBtn.addEventListener('click', () => {
+    customInput.style.display = 'inline';  // show input
+    customInput.focus();                    // focus on input
+    select.style.display = 'none';         // hide dropdown
+  });
+</script>
 </body>
 </html>
