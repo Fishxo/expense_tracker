@@ -116,10 +116,28 @@
   .icon-btn:hover {
     color: #007bff;
   }
-  .form-buttons {
+ .form-buttons {
   display: flex;
-  gap: 70px; /* space between Add and Calculator */
+  align-items: center;
+  gap: 12px;
 }
+
+.form-buttons button {
+  width: 120px;
+  height: 42px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* total on right corner */
+.total-box {
+  margin-left: auto;
+  font-weight: bold;
+  font-size: 16px;
+}
+
 
 /* this css is for looping */
 /* Container for all expenses */
@@ -210,32 +228,42 @@
         <label for="descreaptiom" >descreaption</label>
         <textarea name="desc" id="new" required></textarea><br>
         <label for="cat">Category:</label>
-<select id="cat" name="cat" onchange="checkOther(this)">
+<select id="cat" name="cat" onchange="checkOther(this)" required>
+  <option value=""></option>
   <option value="Food">Food</option>
   <option value="Transport">Transport</option>
   <option value="Bills">Bills</option>
   <option value="Entertainment">Entertainment</option>
   <option value="Other">Other</option>
 
-</select>
+</select >
  <button type="button" id="addCatBtn">➕</button>
 <input type="text" id="customCat" name="cat" placeholder="Enter custom category" style="display:none; margin-top:5px;">
         
         <label for="amount">amount</label>
         <input type="text" name="amount" id="am" required><br>
         <label for="birrs">birr</label>
-        <input class="birr" type="text" name="birr" required>
+        <input class="birr" type="number" name="birr" pattern="\d+" placeholder="numbers Only"  required>
         <label for="date">date</label>
         <input class="date" type="date" name="date" required><br>
 
         <div class="form-buttons">
     <button type="submit">Add</button>
-    <button type="button" id="calcBtn" onclick="calculateSum()">Calculator</button>
-    
-  </div>
-  <p id="result">Result: 0</p>
+
+  
     </form>
+       <form action="/calculate" method="post">
+  <% expensess.forEach(e => { %>
+    <input type="hidden" name="birr[]" value="<%= e.birr %>">
+  <% }) %>
+  <button type="submit">Calculate</button>
+</form>
+
+<p>Total: <%= total || 0 %></p>
+
     
+  
+</div>
    <% expensess.forEach(expense => { %>
 <div class="expense-item">
   <div class="expense-details">
@@ -260,7 +288,7 @@
    <script>
  // for calculater 
    function calculateSum() {
-  const inputs = document.querySelectorAll('.num');
+  const inputs = document.querySelectorAll('.birr');
   let sum = 0;
 
   inputs.forEach(input => {
@@ -269,6 +297,7 @@
 
   // Show the result
   document.getElementById('result').textContent = `Result: ${sum}`;
+  console.log(sum)
 }
   const addBtn = document.getElementById('addCatBtn');
   const select = document.getElementById('catSelect');

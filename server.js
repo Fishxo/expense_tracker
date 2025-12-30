@@ -8,6 +8,7 @@ app.use(express.urlencoded({extended:true}))
 
 let expensess =[];
 let id = 1;
+let total = 0;
 
 // getting an ejs file 
 app.set('view engine','ejs')
@@ -23,7 +24,7 @@ app.post('/add' ,(req,res) =>{
 // passing to ejs file 
 
 app.get('/', (req,res) =>{
-    res.render('index' ,{expensess})
+    res.render('index' ,{expensess ,total : 0})
 })
 //using a delete button
 
@@ -41,6 +42,7 @@ app.get('/', (req,res) =>{
         expense.desc = req.body.desc;
         expense.amount = req.body.amount;
         expense.cat = req.body.cat;
+        expense.birr = req.body.birr;
         expense.date = req.body.date;
     }
     res.redirect('/');
@@ -51,6 +53,14 @@ app.get('/edit/:id', (req, res) => {
    if (!expense) return res.redirect('/');
   res.render('edit', { expense });
 });
+ // accessing a calculator button 
+  app.post('/calculate' , (req,res)=>{
+    const birrs = req.body.birr || [];
+        const total = birrs.reduce((sum,b)=> sum + Number(b),0)
+        res.render('index',{expensess , total})
+  })
+
+
 
 app.listen(3000,(req,res) => {
     console.log('server is serving')
